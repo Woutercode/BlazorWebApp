@@ -1,0 +1,11 @@
+<!--WOUTER: THIS IS KIND OF THE MAIN PAGE-->
+<Router AppAssembly="@typeof(Program).Assembly"> <!--WOUTER: THIS REFERS TO BLAZORWEBUI-->
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address. Contact us: developer@newageitco.co.za</p>
+        </LayoutView>
+    </NotFound>
+</Router>

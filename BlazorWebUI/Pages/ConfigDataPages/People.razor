@@ -1,0 +1,76 @@
+﻿@page "/ConfigDataPages/People"
+@using DataAccessLibrary
+@using DataAccessLibrary.Models
+@using BlazorWebUI.Models
+@inject IPeopleData _db
+
+
+<h1 style="color:blue">People Data</h1>
+
+<h4 style="color:lawngreen"> Insert new Person Data</h4>
+<EditForm Model="newPerson" OnValidSubmit="@InsertPerson">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <InputText id="firstName" @bind-Value="newPerson.FirstName"/>
+    <InputText id="lastName" @bind-Value="newPerson.LastName" />
+    <InputText id="emailAddress" @bind-Value="newPerson.EmailAddress" />
+
+    <button type="submit" class="btn btn-outline-primary">PROCESS</button>
+</EditForm>
+
+<h4 style="color:darkgreen">Current People Data</h4>
+@if (people is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-success"> @* <table class="table table-striped"> *@
+        @*<thread>*@
+            <tr>
+                <th style="background-color:whitesmoke;color:teal">First Name</th>            
+                <th style="background-color:whitesmoke;color:teal">Last Name</th>           
+                <th style="background-color:whitesmoke;color:teal">Email Address</th>           
+            </tr>
+        @*</thread>*@
+        <tbody>
+            @foreach (var person in people)
+            {
+                <tr>
+                    <td style="background-color:teal;color:whitesmoke">@person.FirstName</td>
+                    <td style="background-color:teal;color:whitesmoke">@person.LastName</td>
+                    <td style="background-color:teal;color:whitesmoke">@person.EmailAddress</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private List<PersonModel> people;
+
+    private DisplayPersonModel newPerson = new DisplayPersonModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        people = await _db.GetPeople();
+
+    }
+
+    private async Task InsertPerson()
+    {
+        PersonModel p = new PersonModel
+        {
+            FirstName = newPerson.FirstName,
+            LastName = newPerson.LastName,
+            EmailAddress = newPerson.EmailAddress,
+        };
+        await _db.InsertPerson(p);
+
+        people.Add(p);
+
+        newPerson = new DisplayPersonModel();
+    }
+}
+
+
